@@ -1,0 +1,25 @@
+# IDE
+.idea/
+.claude/
+*.iml
+
+# Java / Maven
+target/
+*.class
+
+# Node / frontend
+frontend/node_modules/
+frontend/dist/
+frontend/*.log
+
+# Python / optimizer
+optimizer/.venv/
+optimizer/__pycache__/
+optimizer/*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local secrets - see application.properties.example
+src/main/resources/application.properties

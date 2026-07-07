@@ -1,0 +1,15 @@
+spring.datasource.url=jdbc:postgresql://localhost:5432/dss_rwandair
+spring.datasource.username=dss_app
+spring.datasource.password=CHANGE_ME
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.format_sql=true
+server.port=8080
+app.jwt.secret=CHANGE_ME_TO_A_LONG_RANDOM_STRING
+app.jwt.expiration=86400000
+app.optimizer.url=http://localhost:8000
+spring.web.cors.allowed-origins=http://localhost:5173,http://localhost:3000
+app.security.default-admin-username=admin
+app.security.default-admin-password=CHANGE_ME
