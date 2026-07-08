@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { api, ApiRequestError } from "../api/client";
 import type { DelayCategory, RecoveryScenarioSummary, ScenarioStatus } from "../types";
 import { usePagination } from "../hooks/usePagination";
@@ -17,14 +17,22 @@ function formatDate(value: string | null) {
   return value ? new Date(value).toLocaleString() : "—";
 }
 
+const VALID_STATUSES: ScenarioStatus[] = ["OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"];
+
 export function RecoveryHistoryPage() {
+  const [searchParams] = useSearchParams();
+  const initialStatus = searchParams.get("status");
+  const validInitialStatus = VALID_STATUSES.includes(initialStatus as ScenarioStatus)
+    ? (initialStatus as ScenarioStatus)
+    : "";
+
   const [scenarios, setScenarios] = useState<RecoveryScenarioSummary[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<DelayCategory | "">("");
-  const [statusFilter, setStatusFilter] = useState<ScenarioStatus | "">("");
+  const [statusFilter, setStatusFilter] = useState<ScenarioStatus | "">(validInitialStatus);
 
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
@@ -97,7 +105,7 @@ export function RecoveryHistoryPage() {
             <label htmlFor="hist-status">Status</label>
             <select id="hist-status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as ScenarioStatus | "")}>
               <option value="">All</option>
-              {["OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"].map((s) => (
+              {VALID_STATUSES.map((s) => (
                 <option key={s} value={s}>
                   {s}
                 </option>
@@ -111,21 +119,16 @@ export function RecoveryHistoryPage() {
         ) : filtered.length === 0 ? (
           <p className="empty-state">No recovery scenarios match these filters.</p>
         ) : (
-          <div className="table-scroll">
-            <table>
+          <div className="history-table-wrap">
+            <table className="history-table">
               <thead>
                 <tr>
                   <th></th>
                   <th>Flight</th>
-                  <th>Cause</th>
-                  <th>Priority</th>
-                  <th>Status</th>
-                  <th>Decision by</th>
-                  <th>Resolved</th>
-                  <th>Selected option</th>
-                  <th>Estimated cost</th>
-                  <th>Actual cost</th>
-                  <th>Saved</th>
+                  <th>Status / priority</th>
+                  <th>Decision</th>
+                  <th>Recovery option</th>
+                  <th>Cost</th>
                   <th></th>
                 </tr>
               </thead>
@@ -136,20 +139,29 @@ export function RecoveryHistoryPage() {
                       <input type="checkbox" checked={selectedIds.includes(s.id)} onChange={() => toggleSelected(s.id)} />
                     </td>
                     <td>
-                      {s.flightNumber} {s.origin && s.destination ? `(${s.origin}→${s.destination})` : ""}
-                      <div className="cost-breakdown">{s.delayMinutes} min delay</div>
+                      <strong>{s.flightNumber}</strong> {s.origin && s.destination ? `(${s.origin}→${s.destination})` : ""}
+                      <div className="cost-breakdown">
+                        {s.delayCategory ?? "—"} · {s.delayMinutes} min delay
+                      </div>
                     </td>
-                    <td>{s.delayCategory ?? "—"}</td>
-                    <td className={`priority-${s.priority}`}>{s.priority}</td>
                     <td>
                       <span className={`status-pill status-${s.status}`}>{s.status}</span>
+                      <div className={`cost-breakdown priority-${s.priority}`}>{s.priority} priority</div>
                     </td>
-                    <td>{s.decisionMadeBy ?? "—"}</td>
-                    <td>{formatDate(s.resolvedAt)}</td>
+                    <td>
+                      {s.decisionMadeBy ?? "—"}
+                      <div className="cost-breakdown">{formatDate(s.resolvedAt)}</div>
+                    </td>
                     <td>{s.selectedOptionType ? s.selectedOptionType.replaceAll("_", " ") : "—"}</td>
-                    <td>{formatCurrency(s.selectedOptionCost)}</td>
-                    <td>{s.outcomeRecorded ? formatCurrency(s.actualCost) : "—"}</td>
-                    <td>{s.outcomeRecorded ? formatCurrency(s.actualCostSaved) : "—"}</td>
+                    <td>
+                      <div className="cost-breakdown">Est {formatCurrency(s.selectedOptionCost)}</div>
+                      <div className="cost-breakdown">
+                        Actual {s.outcomeRecorded ? formatCurrency(s.actualCost) : "—"}
+                      </div>
+                      <div className="cost-breakdown">
+                        Saved {s.outcomeRecorded ? formatCurrency(s.actualCostSaved) : "—"}
+                      </div>
+                    </td>
                     <td>
                       <Link to={`/delay-events/${s.delayEventId}`} className="secondary-link">
                         View →
@@ -172,17 +184,14 @@ export function RecoveryHistoryPage() {
               Clear selection
             </button>
           </div>
-          <div className="table-scroll">
-            <table>
+          <div className="history-table-wrap">
+            <table className="history-table">
               <thead>
                 <tr>
                   <th>Flight</th>
                   <th>Cause / delay</th>
-                  <th>Selected option</th>
-                  <th>Estimated cost</th>
-                  <th>Actual cost</th>
-                  <th>Saved</th>
-                  <th>Manual baseline</th>
+                  <th>Recovery option</th>
+                  <th>Cost</th>
                   <th>Decision time</th>
                 </tr>
               </thead>
@@ -201,10 +210,14 @@ export function RecoveryHistoryPage() {
                         {s.delayCategory} · {s.delayMinutes} min
                       </td>
                       <td>{s.selectedOptionType ? s.selectedOptionType.replaceAll("_", " ") : "—"}</td>
-                      <td>{formatCurrency(s.selectedOptionCost)}</td>
-                      <td>{s.outcomeRecorded ? formatCurrency(s.actualCost) : "Not yet recorded"}</td>
-                      <td>{s.outcomeRecorded ? formatCurrency(s.actualCostSaved) : "—"}</td>
-                      <td>{formatCurrency(s.manualBaselineCost)}</td>
+                      <td>
+                        <div className="cost-breakdown">Est {formatCurrency(s.selectedOptionCost)}</div>
+                        <div className="cost-breakdown">
+                          Actual {s.outcomeRecorded ? formatCurrency(s.actualCost) : "Not yet recorded"}
+                        </div>
+                        <div className="cost-breakdown">Saved {s.outcomeRecorded ? formatCurrency(s.actualCostSaved) : "—"}</div>
+                        <div className="cost-breakdown">Manual baseline {formatCurrency(s.manualBaselineCost)}</div>
+                      </td>
                       <td>{decisionMinutes !== null ? `${decisionMinutes} min` : "—"}</td>
                     </tr>
                   );
