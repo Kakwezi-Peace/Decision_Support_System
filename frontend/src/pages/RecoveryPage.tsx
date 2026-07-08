@@ -166,22 +166,28 @@ export function RecoveryPage() {
         <p>MILP + RL ranked options, cost trade-offs, and the final call — all in one place.</p>
       </div>
 
-      <div className="card">
-        <div className="section-actions">
-          <div>
-            <h2>
-              Flight {delayEvent.flightNumber} — {delayEvent.delayCategory} delay
-            </h2>
-            <span className="cost-breakdown">
-              {delayEvent.delayMinutes} minutes · reported {new Date(delayEvent.reportedAt).toLocaleString()} ·{" "}
-              <span className={`status-pill status-${delayEvent.status}`}>{delayEvent.status}</span>
-            </span>
+      <div className="card recovery-summary-card">
+        <div className="recovery-summary-top">
+          <div className="recovery-summary-title">
+            <span className="recovery-summary-flight">{delayEvent.flightNumber}</span>
+            <span className="badge badge-category">{delayEvent.delayCategory}</span>
+            <span className={`status-pill status-${delayEvent.status}`}>{delayEvent.status}</span>
           </div>
           {canRunRecovery && (
             <button className="primary" onClick={handleOptimize} disabled={optimizing}>
               {optimizing ? "Optimizing..." : scenario ? "Re-run optimization" : "Run optimization"}
             </button>
           )}
+        </div>
+        <div className="recovery-summary-stats">
+          <div>
+            <strong>{delayEvent.delayMinutes} min</strong>
+            <span>Delay duration</span>
+          </div>
+          <div>
+            <strong>{new Date(delayEvent.reportedAt).toLocaleString()}</strong>
+            <span>Reported</span>
+          </div>
         </div>
         {error && <div className="error-banner">{error}</div>}
         {!scenario && !error && (
