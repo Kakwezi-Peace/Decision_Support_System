@@ -15,6 +15,15 @@
   --warning-soft: #fffbeb;
   --success: #15803d;
   --success-soft: #f0fdf4;
+
+  /* RwandAir brand palette (from the logo: deep blue, gold sun, green wing) */
+  --rwandair-blue: #003da5;
+  --rwandair-blue-soft: #e8f0fc;
+  --rwandair-gold: #f2a900;
+  --rwandair-gold-soft: #fef6e6;
+  --rwandair-green: #009a44;
+  --rwandair-green-soft: #e8f7ee;
+
   --radius: 14px;
   --radius-sm: 9px;
   --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
@@ -1018,6 +1027,15 @@ tr.recommended-row td:first-child {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.analytics-kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
 .analytics-kpi-card strong {
@@ -1030,6 +1048,33 @@ tr.recommended-row td:first-child {
   font-size: 0.88rem;
   color: var(--text-muted);
   line-height: 1.35;
+}
+
+.analytics-kpi-card--blue {
+  border-top: 4px solid var(--rwandair-blue);
+  background: linear-gradient(180deg, var(--rwandair-blue-soft) 0%, var(--panel) 60%);
+}
+
+.analytics-kpi-card--blue strong {
+  color: var(--rwandair-blue);
+}
+
+.analytics-kpi-card--gold {
+  border-top: 4px solid var(--rwandair-gold);
+  background: linear-gradient(180deg, var(--rwandair-gold-soft) 0%, var(--panel) 60%);
+}
+
+.analytics-kpi-card--gold strong {
+  color: var(--rwandair-gold);
+}
+
+.analytics-kpi-card--green {
+  border-top: 4px solid var(--rwandair-green);
+  background: linear-gradient(180deg, var(--rwandair-green-soft) 0%, var(--panel) 60%);
+}
+
+.analytics-kpi-card--green strong {
+  color: var(--rwandair-green);
 }
 
 .analytics-subheading {
@@ -1200,9 +1245,151 @@ tr.recommended-row td:first-child {
   margin-left: auto;
 }
 
+/* ---------- column chart ---------- */
+
+.column-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  height: 220px;
+  padding: 1rem 0.5rem 0;
+  border-bottom: 2px solid var(--border);
+  overflow-x: auto;
+}
+
+.column-chart-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  height: 100%;
+  gap: 0.5rem;
+  width: 90px;
+}
+
+.column-chart-value {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.column-chart-track {
+  width: 100%;
+  max-width: 56px;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+}
+
+.column-chart-bar {
+  width: 100%;
+  background: linear-gradient(180deg, var(--accent) 0%, #6366f1 100%);
+  border-radius: 8px 8px 0 0;
+  transition: height 0.3s ease;
+  min-height: 2px;
+}
+
+.column-chart-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
 @media (max-width: 560px) {
   .pie-chart-wrap {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+/* ---------- recovery summary card ---------- */
+
+.recovery-summary-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.recovery-summary-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.recovery-summary-flight {
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.badge-category {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.recovery-summary-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.recovery-summary-stats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.recovery-summary-stats strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.recovery-summary-stats span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ---------- recovery history table ---------- */
+
+.history-table-wrap {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.history-table {
+  min-width: 0;
+  table-layout: auto;
+}
+
+.history-table th,
+.history-table td {
+  padding: 0.6rem 0.6rem;
+}
+
+.history-table td .cost-breakdown {
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .history-table {
+    min-width: 640px;
   }
 }
