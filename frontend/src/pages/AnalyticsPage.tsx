@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { api, ApiRequestError } from "../api/client";
 import type { AnalyticsSummary } from "../types";
 
@@ -14,27 +15,17 @@ function orderedCategories(...maps: Record<string, number>[]) {
   return CATEGORY_ORDER.filter((c) => keys.has(c)).concat([...keys].filter((k) => !CATEGORY_ORDER.includes(k)));
 }
 
-function BarRow({ label, value, max, formatValue }: { label: string; value: number; max: number; formatValue: (v: number) => string }) {
-  const pct = max > 0 ? Math.max((value / max) * 100, value > 0 ? 3 : 0) : 0;
-  return (
-    <div className="analytics-bar-row">
-      <span className="analytics-bar-label">{label}</span>
-      <div className="analytics-bar-track">
-        <div className="analytics-bar-fill" style={{ width: `${pct}%` }} />
-      </div>
-      <span className="analytics-bar-value">{formatValue(value)}</span>
-    </div>
-  );
-}
-
-const PIE_COLORS = ["#4f46e5", "#0891b2", "#d97706", "#dc2626", "#16a34a", "#7c3aed", "#db2777"];
+const PIE_COLORS_PRIMARY = ["#4f46e5", "#0891b2", "#d97706", "#16a34a", "#dc2626", "#7c3aed", "#db2777"];
+const PIE_COLORS_SECONDARY = ["#ea580c", "#059669", "#e11d48", "#0284c7", "#9333ea", "#65a30d", "#be185d"];
 
 function PieChart({
   data,
   formatValue,
+  colors = PIE_COLORS_PRIMARY,
 }: {
   data: { label: string; value: number }[];
   formatValue: (v: number) => string;
+  colors?: string[];
 }) {
   const total = data.reduce((sum, d) => sum + d.value, 0);
   let cumulativePct = 0;
@@ -42,7 +33,7 @@ function PieChart({
     const pct = total > 0 ? (d.value / total) * 100 : 0;
     const start = cumulativePct;
     cumulativePct += pct;
-    return { ...d, color: PIE_COLORS[i % PIE_COLORS.length], pct, start, end: cumulativePct };
+    return { ...d, color: colors[i % colors.length], pct, start, end: cumulativePct };
   });
   const gradient =
     total > 0
@@ -62,6 +53,35 @@ function PieChart({
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function ColumnChart({
+  data,
+  formatValue,
+  colors = PIE_COLORS_PRIMARY,
+}: {
+  data: { label: string; value: number }[];
+  formatValue: (v: number) => string;
+  colors?: string[];
+}) {
+  const max = Math.max(1, ...data.map((d) => d.value));
+  return (
+    <div className="column-chart">
+      {data.map((d, i) => {
+        const heightPct = Math.max((d.value / max) * 100, d.value > 0 ? 4 : 0);
+        const color = colors[i % colors.length];
+        return (
+          <div key={d.label} className="column-chart-col">
+            <span className="column-chart-value">{formatValue(d.value)}</span>
+            <div className="column-chart-track">
+              <div className="column-chart-bar" style={{ height: `${heightPct}%`, background: color }} />
+            </div>
+            <span className="column-chart-label">{d.label}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -95,30 +115,30 @@ export function AnalyticsPage() {
       ) : (
         <>
           <div className="analytics-kpi-grid">
-            <div className="analytics-kpi-card">
+            <Link to="/delay-events" className="analytics-kpi-card analytics-kpi-card--blue">
               <strong>{summary.totalDelayEvents}</strong>
               <span>Delay events recorded</span>
-            </div>
-            <div className="analytics-kpi-card">
+            </Link>
+            <Link to="/history?status=RESOLVED" className="analytics-kpi-card analytics-kpi-card--green">
               <strong>{summary.totalResolvedScenarios}</strong>
               <span>Recovery decisions resolved</span>
-            </div>
-            <div className="analytics-kpi-card">
+            </Link>
+            <Link to="/history?status=IN_PROGRESS" className="analytics-kpi-card analytics-kpi-card--gold">
               <strong>{summary.totalPendingScenarios}</strong>
               <span>Pending a decision</span>
-            </div>
-            <div className="analytics-kpi-card">
+            </Link>
+            <Link to="/history?status=RESOLVED" className="analytics-kpi-card analytics-kpi-card--green">
               <strong>{formatCurrency(summary.totalCostSaved)}</strong>
               <span>Cost saved vs estimate (all recorded outcomes)</span>
-            </div>
-            <div className="analytics-kpi-card">
+            </Link>
+            <Link to="/history?status=RESOLVED" className="analytics-kpi-card analytics-kpi-card--blue">
               <strong>{summary.avgDecisionMinutes !== null ? `${summary.avgDecisionMinutes.toFixed(1)} min` : "—"}</strong>
               <span>Average time from ranked options to decision</span>
-            </div>
-            <div className="analytics-kpi-card">
+            </Link>
+            <Link to="/history" className="analytics-kpi-card analytics-kpi-card--gold">
               <strong>{summary.avgComputationTimeMs !== null ? `${summary.avgComputationTimeMs.toFixed(0)} ms` : "—"}</strong>
               <span>Average MILP/RL solve time</span>
-            </div>
+            </Link>
           </div>
 
           <div className="card">
@@ -136,18 +156,13 @@ export function AnalyticsPage() {
                   formatValue={(v) => `${v}`}
                 />
                 <h3 className="analytics-subheading">Average delay duration (minutes)</h3>
-                {(() => {
-                  const max = Math.max(1, ...Object.values(summary.avgDelayMinutesByCategory));
-                  return orderedCategories(summary.avgDelayMinutesByCategory).map((cat) => (
-                    <BarRow
-                      key={cat}
-                      label={cat}
-                      value={summary.avgDelayMinutesByCategory[cat] ?? 0}
-                      max={max}
-                      formatValue={(v) => `${v.toFixed(0)} min`}
-                    />
-                  ));
-                })()}
+                <ColumnChart
+                  data={orderedCategories(summary.avgDelayMinutesByCategory).map((cat) => ({
+                    label: cat,
+                    value: summary.avgDelayMinutesByCategory[cat] ?? 0,
+                  }))}
+                  formatValue={(v) => `${v.toFixed(0)} min`}
+                />
               </>
             )}
           </div>
@@ -164,6 +179,7 @@ export function AnalyticsPage() {
                   value: summary.costByCategory[cat] ?? 0,
                 }))}
                 formatValue={formatCurrency}
+                colors={PIE_COLORS_SECONDARY}
               />
             )}
           </div>
