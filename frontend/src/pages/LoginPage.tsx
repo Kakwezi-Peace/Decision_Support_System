@@ -31,7 +31,7 @@ export function LoginPage() {
         <div className="login-photo-content">
           <h2>Fly the dream of Africa.</h2>
           <p>
-            The Decision Support System for cost-optimal aircraft delay recovery. Helping RwandAir's Operations
+            The Cost-Effective Aircraft Delay Recovery System. Helping RwandAir's Operations
             Control Centre turn disruptions into fast, evidence-based decisions.
           </p>
           <p>

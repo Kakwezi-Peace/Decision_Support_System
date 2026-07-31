@@ -43,8 +43,8 @@ export function Layout() {
         <div className="brand">
           <img src="/images/img1.png" alt="RwandAir" />
           <div>
-            <h1>RwandAir OCC — Decision Support System</h1>
-            <div className="subtitle">Cost-optimal aircraft delay recovery</div>
+            <h1>RwandAir OCC</h1>
+            <div className="subtitle">Cost-Effective Aircraft Delay Recovery System</div>
           </div>
         </div>
         <nav className="app-nav">

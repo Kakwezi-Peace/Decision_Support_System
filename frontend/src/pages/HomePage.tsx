@@ -19,7 +19,7 @@ export function HomePage() {
       </header>
 
       <div className="home-hero-content">
-        <span className="home-hero-eyebrow">Decision Support System</span>
+        <span className="home-hero-eyebrow">Cost-Effective Aircraft Delay Recovery System</span>
         <h1>Every delay meets a plan, in seconds.</h1>
         <p>
           When a flight disrupts, RwandAir's Operations Control Centre has minutes to decide, not hours. This

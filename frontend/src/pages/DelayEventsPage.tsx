@@ -163,7 +163,7 @@ export function DelayEventsPage() {
             </select>
             {flights.length === 0 && (
               <div className="cost-breakdown">
-                No flights yet — add one under "Operational Data" first, then it'll show up here.
+                No flights yet. Add one under "Operational Data" first, then it'll show up here.
               </div>
             )}
           </div>

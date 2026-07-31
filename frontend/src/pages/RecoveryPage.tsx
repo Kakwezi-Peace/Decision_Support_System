@@ -163,7 +163,7 @@ export function RecoveryPage() {
           ← Back to delay events
         </Link>
         <h1>Recovery Decision</h1>
-        <p>MILP + RL ranked options, cost trade-offs, and the final call — all in one place.</p>
+        <p>MILP + RL ranked options, cost trade-offs, and the final call, all in one place.</p>
       </div>
 
       <div className="card recovery-summary-card">
@@ -379,7 +379,7 @@ export function RecoveryPage() {
                         id="manual-baseline-cost"
                         type="number"
                         min={0}
-                        placeholder="What would this have cost without the DSS?"
+                        placeholder="What would this have cost without the system?"
                         value={manualBaselineCost}
                         onChange={(e) => setManualBaselineCost(e.target.value === "" ? "" : Number(e.target.value))}
                       />

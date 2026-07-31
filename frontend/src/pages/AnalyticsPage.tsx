@@ -105,7 +105,7 @@ export function AnalyticsPage() {
     <div className="page-photo-page page-photo-page--sky">
       <div className="page-title-chip">
         <h1>Recovery Analytics</h1>
-        <p>Delay frequency, cost drivers, decision speed, and DSS performance against the manual baseline.</p>
+        <p>Delay frequency, cost drivers, decision speed, and system performance against the manual baseline.</p>
       </div>
 
       {error && <div className="error-banner">{error}</div>}
@@ -185,7 +185,7 @@ export function AnalyticsPage() {
           </div>
 
           <div className="card">
-            <h2>DSS vs. manual decision-making baseline</h2>
+            <h2>Cost-Effective Aircraft Delay Recovery System vs. manual decision-making baseline</h2>
             {summary.scenariosWithManualBaseline === 0 ? (
               <p className="empty-state">
                 No manual-baseline estimates have been logged yet. When recording a recovery outcome, dispatchers can
@@ -200,7 +200,7 @@ export function AnalyticsPage() {
                 </div>
                 <div>
                   <strong>{formatCurrency(summary.actualCostForBaselineComparison ?? 0)}</strong>
-                  <span>Actual DSS-recommended cost, same {summary.scenariosWithManualBaseline} scenario(s)</span>
+                  <span>Actual system-recommended cost, same {summary.scenariosWithManualBaseline} scenario(s)</span>
                 </div>
                 <div className="analytics-comparison-highlight">
                   <strong>
