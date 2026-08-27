@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { ApiRequestError } from "../api/client";
 
@@ -72,6 +72,9 @@ export function LoginPage() {
               {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
+          <div className="login-back-link">
+            <Link to="/forgot-password">Forgot your password?</Link>
+          </div>
         </div>
       </div>
     </div>

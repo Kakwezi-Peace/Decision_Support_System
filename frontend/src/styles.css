@@ -16,13 +16,14 @@
   --success: #15803d;
   --success-soft: #f0fdf4;
 
-  /* RwandAir brand palette (from the logo: deep blue, gold sun, green wing) */
-  --rwandair-blue: #003da5;
-  --rwandair-blue-soft: #e8f0fc;
-  --rwandair-gold: #f2a900;
-  --rwandair-gold-soft: #fef6e6;
-  --rwandair-green: #009a44;
-  --rwandair-green-soft: #e8f7ee;
+  /* RwandAir brand palette (matched to rwandair.com: royal blue, sun gold, flag green) */
+  --rwandair-blue: #005498;
+  --rwandair-blue-dark: #003a6b;
+  --rwandair-blue-soft: #e6f0f8;
+  --rwandair-gold: #fbe014;
+  --rwandair-gold-soft: #fffbe0;
+  --rwandair-green: #94c745;
+  --rwandair-green-soft: #f1f8e8;
 
   --radius: 14px;
   --radius-sm: 9px;
@@ -595,6 +596,22 @@ tr.recommended-row td:first-child {
   font-size: 0.87rem;
 }
 
+.success-banner {
+  background: var(--success-soft);
+  color: var(--success);
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.95rem;
+  margin-bottom: 1.1rem;
+  font-size: 0.87rem;
+}
+
+.success-banner a {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 .empty-state {
   color: var(--text-muted);
   font-size: 0.9rem;
@@ -725,6 +742,53 @@ tr.recommended-row td:first-child {
   font-size: 1.05rem;
 }
 
+.login-back-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.login-back-link a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-back-link a:hover {
+  text-decoration: underline;
+}
+
+.reset-link-box {
+  background: var(--accent-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.25rem;
+}
+
+.reset-link-box p {
+  margin: 0 0 0.85rem;
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.reset-link-box-url {
+  display: block;
+  word-break: break-all;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.9rem;
+}
+
+.reset-link-box-url:hover {
+  text-decoration: underline;
+}
+
 /* ---------- misc ---------- */
 
 .cost-breakdown {
@@ -835,179 +899,560 @@ tr.recommended-row td:first-child {
   }
 }
 
-/* ---------- home page ---------- */
+/* ---------- home page (styled after rwandair.com: white nav, photo banner, blue/gold/green brand) ---------- */
 
-.home-hero {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: url("/images/img3.jpg") center/cover no-repeat;
-  color: white;
+.home-page {
+  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: white;
 }
 
-.home-hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(9, 14, 24, 0.55) 0%, rgba(9, 14, 24, 0.78) 55%, rgba(9, 14, 24, 0.94) 100%);
-}
-
-.home-hero-topbar {
-  position: relative;
-  z-index: 1;
+.home-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.75rem 2.5rem;
+  padding: 0.9rem 2.5rem;
+  background: white;
+  box-shadow: 0 1px 0 rgba(16, 24, 40, 0.08);
 }
 
-.home-hero-brand {
+.home-navbar-brand {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-weight: 700;
-  font-size: 1.25rem;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--rwandair-blue-dark);
 }
 
-.home-hero-brand img {
+.home-navbar-brand img {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.home-services-toggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
   width: 44px;
   height: 44px;
   border-radius: 10px;
+  border: 2px solid var(--rwandair-blue);
   background: white;
-  padding: 4px;
-  object-fit: contain;
-  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  padding: 0;
 }
 
-.home-hero-signin {
-  color: white;
+.home-services-toggle span {
+  display: block;
+  width: 22px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--rwandair-blue);
+}
+
+.home-services-toggle:hover {
+  background: var(--rwandair-blue-soft);
+}
+
+.home-services-menu {
+  position: relative;
+}
+
+.home-services-dropdown {
+  position: absolute;
+  top: calc(100% + 0.85rem);
+  right: 0;
+  z-index: 20;
+  background: white;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  width: 420px;
+  max-height: 75vh;
+  overflow-y: auto;
+  padding: 1.75rem 2rem;
+}
+
+.home-services-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 18px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-left: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  transform: rotate(45deg);
+}
+
+.home-services-dropdown-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.home-services-modal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.home-services-modal-list li {
+  border-bottom: 1px solid var(--border);
+}
+
+.home-services-modal-list li:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.home-services-modal-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1.15rem 0.25rem;
   text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 0.6rem 1.4rem;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  color: var(--text);
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  transition: color 0.15s ease, padding-left 0.15s ease;
 }
 
-.home-hero-signin:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.8);
+.home-services-modal-list a:hover {
+  color: var(--rwandair-blue);
+  padding-left: 0.5rem;
 }
 
-.home-hero-content {
+.home-services-modal-arrow {
+  font-size: 1.3rem;
+  color: var(--rwandair-blue);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.home-services-modal-list a:hover .home-services-modal-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+@media (max-width: 640px) {
+  .home-services-dropdown {
+    width: min(360px, calc(100vw - 2.5rem));
+  }
+  .home-services-modal-list a {
+    font-size: 1.15rem;
+  }
+}
+
+.home-banner {
+  position: relative;
+  min-height: 640px;
+  display: flex;
+  align-items: flex-end;
+  background: url("/images/hero-flight.jpg") center 30%/cover no-repeat;
+}
+
+.home-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(0, 34, 68, 0.96) 0%, rgba(0, 40, 78, 0.75) 32%, rgba(0, 40, 78, 0.15) 65%, rgba(0, 40, 78, 0.05) 100%);
+}
+
+.home-banner-content {
   position: relative;
   z-index: 1;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  max-width: 840px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
+  max-width: 720px;
+  padding: 3rem 2.5rem 3.5rem;
+  color: white;
 }
 
-.home-hero-eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #93c5fd;
-  margin-bottom: 1.1rem;
-}
-
-.home-hero-content h1 {
-  font-size: 3.25rem;
-  font-weight: 800;
-  margin: 0 0 1.4rem;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
-}
-
-.home-hero-content p {
-  font-size: 1.15rem;
-  line-height: 1.7;
-  color: #e2e8f0;
-  margin: 0 0 1.1rem;
-}
-
-.home-hero-ctas {
-  margin: 1.5rem 0 0.5rem;
-}
-
-.home-hero-cta-primary {
+.home-banner-eyebrow {
   display: inline-block;
-  background: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--rwandair-blue-dark);
+  background: var(--rwandair-gold);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  margin-bottom: 1.2rem;
+}
+
+.home-banner-content h1 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin: 0 0 1.1rem;
+  letter-spacing: -0.01em;
+  line-height: 1.12;
+}
+
+.home-banner-content p {
+  font-size: 1.1rem;
+  line-height: 1.65;
+  color: #e5edf5;
+  margin: 0 0 1.6rem;
+  max-width: 620px;
+}
+
+.home-banner-cta {
+  display: inline-block;
+  background: var(--rwandair-blue);
   color: white;
   text-decoration: none;
-  padding: 1rem 2.4rem;
+  padding: 0.95rem 2.4rem;
   border-radius: 999px;
-  font-weight: 700;
-  font-size: 1.1rem;
+  font-weight: 800;
+  font-size: 1.05rem;
   box-shadow: var(--shadow-lg);
-  transition: transform 0.15s ease, background-color 0.15s ease;
+  transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
 
-.home-hero-cta-primary:hover {
-  background: var(--accent-hover);
+.home-banner-cta:hover {
+  background: var(--rwandair-gold);
+  color: var(--rwandair-blue-dark);
   transform: translateY(-2px);
 }
 
-.home-hero-stats {
-  display: flex;
-  gap: 2.25rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 2.75rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  width: 100%;
+.home-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 2.5rem;
 }
 
-.home-hero-stats > div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-  max-width: 220px;
+.home-stats > a {
+  display: block;
+  border-radius: var(--radius);
+  border-top: 4px solid var(--rwandair-blue);
+  background: var(--rwandair-blue-soft);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.home-hero-stats strong {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: white;
+.home-stats > a:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
-.home-hero-stats span {
-  font-size: 0.9rem;
-  color: #cbd5e1;
+.home-stats > a:nth-child(2) {
+  border-top-color: var(--rwandair-gold);
+  background: var(--rwandair-gold-soft);
+}
+
+.home-stats > a:nth-child(3) {
+  border-top-color: var(--rwandair-green);
+  background: var(--rwandair-green-soft);
+}
+
+.home-stats strong {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--rwandair-blue-dark);
+  margin-bottom: 0.4rem;
+}
+
+.home-stats > a:nth-child(2) strong {
+  color: #8a6800;
+}
+
+.home-stats > a:nth-child(3) strong {
+  color: #3f6b1d;
+}
+
+.home-stats span {
+  font-size: 0.92rem;
+  color: var(--text);
   line-height: 1.4;
 }
 
-.home-hero-footer {
+.home-cabin-band {
   position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: 1.5rem;
-  font-size: 0.9rem;
-  color: #94a3b8;
+  height: 280px;
+  background: url("/images/hero-cabin.jpg") center 35%/cover no-repeat;
 }
 
-@media (max-width: 780px) {
-  .home-hero-topbar {
-    padding: 1.25rem 1.5rem;
+.home-cabin-band-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  background: linear-gradient(0deg, rgba(0, 34, 68, 0.9) 0%, rgba(0, 34, 68, 0.45) 55%, rgba(0, 34, 68, 0.05) 100%);
+  padding: 1.75rem 2.5rem;
+}
+
+.home-cabin-band-overlay p {
+  color: white;
+  font-size: 1.05rem;
+  font-weight: 700;
+  max-width: 640px;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.home-services {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3.5rem 2.5rem 1rem;
+}
+
+.home-services-header {
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto 2.25rem;
+}
+
+.home-services-header span {
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--rwandair-blue);
+  background: var(--rwandair-blue-soft);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+
+.home-services-header h2 {
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: var(--text);
+  margin: 0 0 0.6rem;
+}
+
+.home-services-header p {
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.home-services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.home-service-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border-top: 4px solid var(--rwandair-blue);
+}
+
+.home-services-grid > :nth-child(3n + 2) {
+  border-top-color: var(--rwandair-gold);
+}
+
+.home-services-grid > :nth-child(3n + 3) {
+  border-top-color: var(--rwandair-green);
+}
+
+.home-service-card h3 {
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: var(--rwandair-blue-dark);
+  margin: 0 0 0.5rem;
+}
+
+.home-service-card p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.home-promo {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem 2.5rem 4rem;
+}
+
+.home-promo img {
+  width: 46%;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  object-fit: cover;
+  height: 320px;
+}
+
+.home-promo-text {
+  flex: 1;
+}
+
+.home-promo-text span {
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--rwandair-blue);
+  background: var(--rwandair-blue-soft);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+
+.home-promo-text h2 {
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: var(--text);
+  margin: 0 0 0.9rem;
+}
+
+.home-promo-text p {
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.home-footer {
+  background: var(--rwandair-blue-dark);
+  color: #cbd8e6;
+}
+
+.home-footer-main {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.75rem 2.5rem 2rem;
+}
+
+.home-footer-brand strong {
+  display: block;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 0.6rem;
+}
+
+.home-footer-brand p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #a9bdd4;
+  max-width: 320px;
+}
+
+.home-footer h4 {
+  color: white;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.9rem;
+}
+
+.home-footer-contact a {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #cbd8e6;
+  text-decoration: none;
+  font-size: 0.92rem;
+  margin-bottom: 0.7rem;
+}
+
+.home-footer-contact a:hover {
+  color: var(--rwandair-gold);
+}
+
+.home-footer-contact svg {
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.home-footer-social {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.home-footer-social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.home-footer-social a:hover {
+  background: var(--rwandair-gold);
+  color: var(--rwandair-blue-dark);
+}
+
+.home-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+  padding: 1.25rem;
+  font-size: 0.85rem;
+  color: #93a8c1;
+}
+
+@media (max-width: 900px) {
+  .home-stats {
+    grid-template-columns: 1fr;
   }
-  .home-hero-content h1 {
+  .home-services-grid {
+    grid-template-columns: 1fr;
+  }
+  .home-promo {
+    flex-direction: column;
+  }
+  .home-promo img {
+    width: 100%;
+    height: 240px;
+  }
+  .home-footer-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-navbar {
+    padding: 0.9rem 1.25rem;
+  }
+  .home-banner {
+    min-height: 520px;
+  }
+  .home-banner-content {
+    padding: 2rem 1.5rem 2.5rem;
+  }
+  .home-banner-content h1 {
     font-size: 2.1rem;
-  }
-  .home-hero-content p {
-    font-size: 1rem;
-  }
-  .home-hero-stats {
-    gap: 1.5rem;
   }
 }
 

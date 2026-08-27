@@ -9,5 +9,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
 
+    Optional<User> findByResetToken(String resetToken);
+
     boolean existsByRole(User.Role role);
 }

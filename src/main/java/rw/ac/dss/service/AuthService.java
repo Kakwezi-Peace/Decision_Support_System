@@ -7,11 +7,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rw.ac.dss.dto.request.ForgotPasswordRequest;
 import rw.ac.dss.dto.request.LoginRequest;
 import rw.ac.dss.dto.request.RegisterRequest;
+import rw.ac.dss.dto.request.ResetPasswordRequest;
 import rw.ac.dss.dto.request.UpdateProfileRequest;
 import rw.ac.dss.dto.request.UpdateUserRequest;
 import rw.ac.dss.dto.response.AuthResponseDto;
+import rw.ac.dss.dto.response.ForgotPasswordResponseDto;
 import rw.ac.dss.dto.response.UserResponseDto;
 import rw.ac.dss.exception.ConflictException;
 import rw.ac.dss.exception.NotFoundException;
@@ -20,11 +23,15 @@ import rw.ac.dss.repository.UserRepository;
 import rw.ac.dss.security.CustomUserDetailsService;
 import rw.ac.dss.security.JwtService;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
+    private static final long RESET_TOKEN_VALIDITY_MINUTES = 30;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -67,6 +74,42 @@ public class AuthService {
                 .fullName(user.getFullName())
                 .role(user.getRole())
                 .build();
+    }
+
+    /**
+     * No email service is configured, so the raw token is returned directly to the
+     * caller instead of being emailed - see ForgotPasswordResponseDto.
+     */
+    @Transactional
+    public ForgotPasswordResponseDto forgotPassword(ForgotPasswordRequest request) {
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new NotFoundException("No account found for username: " + request.getUsername()));
+
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expiry = LocalDateTime.now().plusMinutes(RESET_TOKEN_VALIDITY_MINUTES);
+        user.setResetToken(token);
+        user.setResetTokenExpiry(expiry);
+        userRepository.save(user);
+
+        return ForgotPasswordResponseDto.builder()
+                .resetToken(token)
+                .expiresAt(expiry)
+                .build();
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordRequest request) {
+        User user = userRepository.findByResetToken(request.getToken())
+                .orElseThrow(() -> new NotFoundException("Reset link is invalid or has already been used."));
+
+        if (user.getResetTokenExpiry() == null || user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
+            throw new ConflictException("Reset link has expired. Please request a new one.");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+        userRepository.save(user);
     }
 
     public List<UserResponseDto> listUsers() {

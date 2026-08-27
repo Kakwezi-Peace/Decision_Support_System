@@ -1,13 +1,13 @@
-# RwandAir Decision Support System
+# RwandAir Cost-Effective Aircraft Delay Recovery System
 
-A Decision Support System (DSS) for cost-optimal aircraft delay recovery at RwandAir's Operations Control Centre (OCC). When a flight is delayed, the system generates every feasible recovery option — absorb the delay, cancel the flight, swap the aircraft, substitute crew, or reroute passengers — costs each one out, ranks them, and lets a dispatcher make an informed, evidence-based decision in seconds instead of minutes.
+The Cost-Effective Aircraft Delay Recovery System for cost-optimal aircraft delay recovery at RwandAir's Operations Control Centre (OCC). When a flight is delayed, the system generates every feasible recovery option (absorb the delay, cancel the flight, swap the aircraft, substitute crew, or reroute passengers), costs each one out, ranks them, and lets a dispatcher make an informed, evidence-based decision in seconds instead of minutes.
 
 Built as a BSc final-year research project (Design Science Research methodology), the system pairs a Mixed-Integer Linear Programming (MILP) solver with a Reinforcement Learning (RL) agent that keeps improving from real-world outcomes.
 
 ## How it works
 
 1. A delay is reported against a flight (category, minutes, cause).
-2. The backend gathers current operational state — spare aircraft, available crew, connecting passengers — and sends it to the optimizer.
+2. The backend gathers current operational state (spare aircraft, available crew, connecting passengers) and sends it to the optimizer.
 3. The optimizer runs two engines in parallel:
    - **MILP** (PuLP/CBC) enumerates every recovery option, costs it out (fuel, crew overtime, passenger compensation, ATC slot penalties, MRO), and formally solves for the minimum-cost feasible choice.
    - **RL** (a domain-seeded Q-learning agent) recommends an option based on a learned policy, for comparison.
@@ -18,9 +18,9 @@ Built as a BSc final-year research project (Design Science Research methodology)
 ## Architecture
 
 ```
-frontend/    React 18 + TypeScript + Vite       — the OCC dashboard
-backend/     Spring Boot 3 (Java 21)            — REST API, RBAC, persistence, orchestration
-optimizer/   FastAPI (Python)                   — MILP + RL cost-optimization engine
+frontend/    React 18 + TypeScript + Vite       - the OCC dashboard
+backend/     Spring Boot 3 (Java 21)            - REST API, RBAC, persistence, orchestration
+optimizer/   FastAPI (Python)                   - MILP + RL cost-optimization engine
 ```
 
 The Spring Boot backend is the source of truth: it owns the Postgres database, enforces role-based access control, and calls the Python optimizer over HTTP for every recovery-options request. The optimizer is stateless except for its in-memory RL Q-table.
@@ -30,10 +30,10 @@ The Spring Boot backend is the source of truth: it owns the Postgres database, e
 - **JWT authentication** with 6 roles mapped to real OCC staff categories (Admin, Operations Controller, Crew Scheduler, Maintenance Controller, Commercial Services, Senior Management), each scoped to the data domain they own.
 - **Full CRUD** for Aircraft, Crew, Flights, Delay Events, Passengers, and Users, with pagination and recent-first ordering throughout.
 - **Hybrid MILP + RL recovery engine** producing a ranked, costed list of options per delay event, with a manual override mechanism for controller judgment calls.
-- **Feedback and learning loop** — record the actual cost of a recovery and the RL policy updates from it.
-- **Recovery Analytics** — delay frequency and cost breakdowns by cause, decision-speed KPIs, and a DSS-vs-manual-baseline cost comparison.
-- **Recovery History** — a searchable, filterable record of every past decision, with side-by-side scenario comparison.
-- **Option characterisation** — passenger impact score, crew duty compliance, and regulatory feasibility on every option (documented heuristics — see `optimizer/option_scoring.py`).
+- **Feedback and learning loop**: record the actual cost of a recovery and the RL policy updates from it.
+- **Recovery Analytics**: delay frequency and cost breakdowns by cause, decision-speed KPIs, and a system-vs-manual-baseline cost comparison.
+- **Recovery History**: a searchable, filterable record of every past decision, with side-by-side scenario comparison.
+- **Option characterisation**: passenger impact score, crew duty compliance, and regulatory feasibility on every option (documented heuristics; see `optimizer/option_scoring.py`).
 
 ## Tech stack
 

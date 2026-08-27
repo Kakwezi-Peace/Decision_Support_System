@@ -30,7 +30,7 @@ public class RecoveryOption {
     private String description;
 
     /**
-     * Rank of this option — 1 is the best/most optimal
+     * Rank of this option (1 is the best/most optimal)
      */
     private int rank;
 

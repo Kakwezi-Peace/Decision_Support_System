@@ -38,6 +38,11 @@ public class User {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(unique = true)
+    private String resetToken;
+
+    private LocalDateTime resetTokenExpiry;
+
     /**
      * Mirrors the OCC staff categories in the research proposal's Table 1
      * (Population and Sample Size Distribution), plus ADMIN for system

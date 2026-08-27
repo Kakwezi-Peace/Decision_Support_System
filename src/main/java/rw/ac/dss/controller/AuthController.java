@@ -6,11 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import rw.ac.dss.dto.request.ForgotPasswordRequest;
 import rw.ac.dss.dto.request.LoginRequest;
 import rw.ac.dss.dto.request.RegisterRequest;
+import rw.ac.dss.dto.request.ResetPasswordRequest;
 import rw.ac.dss.dto.request.UpdateProfileRequest;
 import rw.ac.dss.dto.request.UpdateUserRequest;
 import rw.ac.dss.dto.response.AuthResponseDto;
+import rw.ac.dss.dto.response.ForgotPasswordResponseDto;
 import rw.ac.dss.dto.response.UserResponseDto;
 import rw.ac.dss.service.AuthService;
 
@@ -31,6 +34,17 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
+    }
+
+    @PostMapping("/forgot-password")
+    public ForgotPasswordResponseDto forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        return authService.forgotPassword(request);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/users")

@@ -4,6 +4,8 @@ import { ProtectedRoute, AdminRoute } from "./ProtectedRoute";
 import { Layout } from "./Layout";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
+import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { OperationalDataPage } from "./pages/OperationalDataPage";
 import { DelayEventsPage } from "./pages/DelayEventsPage";
 import { RecoveryPage } from "./pages/RecoveryPage";
@@ -19,6 +21,8 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
 
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
